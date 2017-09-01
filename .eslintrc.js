@@ -25,11 +25,12 @@ module.exports = {
     'no-multi-assign': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}],
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": false, "optionalDependencies": false, "peerDependencies": false }],
     "comma-dangle": 0,
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": false, "peerDependencies": false}],
-    "no-console": 0 ,
-    "semi":0,
-    "linebreak-style":0
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true, "optionalDependencies": false, "peerDependencies": false }],
+    "no-console": 0,
+    "semi": 0,
+    "linebreak-style": 0,
+    "indent": 0
   }
 }

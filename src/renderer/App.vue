@@ -1,19 +1,20 @@
 <template>
   <div>
-    <div class="directories-grid">
-      <span v-for="directory in Directories"
-        :key="directory">{{directory}}</span>
+    <div class="grid">
+      <grid-item></grid-item>
+      <grid-item></grid-item>
+      <grid-item></grid-item>
+      <grid-item></grid-item>
+      <grid-item></grid-item>
+      <grid-item></grid-item>
     </div>
     <button @click="goBack">Go Back</button>
     <button @click="getDetails">Print Status</button>
-    <file></file>
-    <folder></folder>
   </div>
 </template>
 
 <script>
-import folder from './components/folder.vue';
-import file from './components/file.vue';
+import gridItem from './components/grid-item.vue';
 const fs = require('fs');
 
 export default {
@@ -36,7 +37,7 @@ export default {
     Directories() {
       return fs.readdirSync(this.currentPath)
         .filter(element => fs.statSync(`${this.currentPath}/${element}`).isDirectory(),
-        );
+      );
     },
   },
   methods: {
@@ -57,10 +58,14 @@ export default {
       this.files = files;
     });
   },
-  components: { folder, file },
+  components: { gridItem }
 };
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.grid {
+  padding: 0px 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>
