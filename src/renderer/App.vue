@@ -2,7 +2,8 @@
   <div class="app">
     <explorer-header :path="currentPathArray"></explorer-header>
     <div class="grid">
-      <grid-item v-for="directory in directories" :key="directory">
+      <grid-item v-for="directory in directories"
+        :key="directory">
         {{directory}}
       </grid-item>
     </div>
@@ -32,13 +33,7 @@ export default {
       )
     },
     currentPathArray() {
-      console.log('getarray')
-      return this.currentPath.split('\\').map((element, index, array) => {
-        if (index !== (array.length - 1)) {
-          return `${element}\\`
-        }
-        return element
-      })
+      return this.currentPath.split('\\')
     }
   },
   methods: {

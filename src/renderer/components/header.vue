@@ -41,6 +41,12 @@ export default {
 
 .path-element {
     cursor: pointer;
+    &::after {
+        content: '\\';
+    }
+    &::after:last-child {
+        content:'';
+    }
     &:hover {
         filter: brightness(1.5)
     }
