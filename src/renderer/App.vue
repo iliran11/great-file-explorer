@@ -1,11 +1,10 @@
 <template>
   <div class="app">
-    <explorer-header @path-descented="pathDescented"></explorer-header>
+    <explorer-header></explorer-header>
     <div class="grid">
       <grid-item v-for="directory in directories"
         :key="directory"
-        :item-data="directory"
-        @item-selected="directoryClicked">
+        :item-data="directory">
         {{directory}}
       </grid-item>
     </div>
