@@ -1,5 +1,6 @@
 <template>
-  <div class="grid-item">
+  <div class="grid-item"
+    @click="itemClicked">
     <div class="icon-container">
       <i class="fa fa-folder-o"
         aria-hidden="true"></i>
@@ -12,7 +13,13 @@
 
 <script>
 export default {
-  name: 'folder',
+  name: 'grid-item',
+  methods: {
+    itemClicked() {
+      this.$emit('item-selected', this.itemData)
+    }
+  },
+  props: ['itemData']
 };
 </script>
 
@@ -40,7 +47,7 @@ $title-size: 3.2vw;
   text-align: center;
   flex-grow: 1;
   padding: 1vh 0px;
-  margin-right:auto;
+  margin-right: auto;
   p {
     margin: 0px;
   }

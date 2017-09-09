@@ -3,14 +3,14 @@
         <div class="path">
             <span v-for="(folder,index) in path"
                 :key="index"
-                @click="pathClicked($event)"
+                @click="pathClicked(index)"
                 class="path-element">{{folder}}</span>
         </div>
-        <i class="fa arrow fa-arrow-left"
+        <!-- <i class="fa arrow fa-arrow-left"
             aria-hidden="true"></i>
 
         <i class="fa arrow fa-arrow-right"
-            aria-hidden="true"></i>
+            aria-hidden="true"></i> -->
     </div>
 </template>
 
@@ -19,8 +19,9 @@ export default {
     name: 'header',
     props: ['path'],
     methods: {
-        pathClicked(event) {
-            console.log(event.target)
+        pathClicked(index) {
+            const directoryDescentDepth = (Math.abs((this.path.length - 1) - index))
+            this.$emit('path-descented', directoryDescentDepth)
         }
     }
 }
@@ -45,7 +46,7 @@ export default {
         content: '\\';
     }
     &::after:last-child {
-        content:'';
+        content: '';
     }
     &:hover {
         filter: brightness(1.5)

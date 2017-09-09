@@ -1,9 +1,12 @@
 <template>
   <div class="app">
-    <explorer-header :path="currentPathArray"></explorer-header>
+    <explorer-header :path="currentPathArray"
+      @path-descented="pathDescented"></explorer-header>
     <div class="grid">
       <grid-item v-for="directory in directories"
-        :key="directory">
+        :key="directory"
+        :item-data="directory"
+        @item-selected="directoryClicked">
         {{directory}}
       </grid-item>
     </div>
@@ -29,8 +32,16 @@ export default {
   computed: {
     directories() {
       return fs.readdirSync(this.currentPath)
-        .filter(element => fs.statSync(`${this.currentPath}/${element}`).isDirectory(),
-      )
+        .filter((element) => {
+          let isDirectory;
+          const filePath = `${this.currentPath}/${element}`
+          /** try/catch  block because there are so files we will have no access to them */
+          try {
+            isDirectory = fs.statSync(filePath).isDirectory()
+          } catch (e) { console.log('cant read', filePath) }
+          return isDirectory
+        }
+        )
     },
     currentPathArray() {
       return this.currentPath.split('\\')
@@ -40,12 +51,23 @@ export default {
     goBack() {
       this.currentPath = path.join(this.currentPath, '..');
     },
+    pathDescented(descentDepth) {
+      // this.currentPath = path.resolve(this.currentPath, '../../')
+      const descentDepthArray = new Array(descentDepth).fill('../')
+      console.log(descentDepthArray)
+      const newPath = path.resolve.apply(null, [this.currentPath].concat(descentDepthArray))
+      this.currentPath = newPath
+      return descentDepth
+    },
     getDetails() {
       fs.readdirSync(this.currentPath)
         .forEach((element) => {
           console.log(fs.statSync(`${this.currentPath}/${element}`));
         });
     },
+    directoryClicked(directoryName) {
+      this.currentPath = path.resolve(this.currentPath, directoryName)
+    }
   },
   created() {
     console.log('mounted')
