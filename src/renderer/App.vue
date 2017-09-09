@@ -10,8 +10,6 @@
         {{directory}}
       </grid-item>
     </div>
-    <button @click="goBack">Go Back</button>
-    <button @click="getDetails">Print Status</button>
   </div>
 </template>
 
@@ -44,26 +42,17 @@ export default {
         )
     },
     currentPathArray() {
-      return this.currentPath.split('\\')
+      /** when we encounter c:\ , the split return 2 elements instead of one.
+       * https://stackoverflow.com/questions/12836062/string-split-returns-an-array-with-two-elements-instead-of-one */
+      return this.currentPath.split('\\').filter(x => x)
     }
   },
   methods: {
-    goBack() {
-      this.currentPath = path.join(this.currentPath, '..');
-    },
     pathDescented(descentDepth) {
       // this.currentPath = path.resolve(this.currentPath, '../../')
       const descentDepthArray = new Array(descentDepth).fill('../')
-      console.log(descentDepthArray)
       const newPath = path.resolve.apply(null, [this.currentPath].concat(descentDepthArray))
       this.currentPath = newPath
-      return descentDepth
-    },
-    getDetails() {
-      fs.readdirSync(this.currentPath)
-        .forEach((element) => {
-          console.log(fs.statSync(`${this.currentPath}/${element}`));
-        });
     },
     directoryClicked(directoryName) {
       this.currentPath = path.resolve(this.currentPath, directoryName)
@@ -72,10 +61,6 @@ export default {
   created() {
     console.log('mounted')
     this.currentPath = path.resolve()
-    // fs.readdir(this.getCurrentPath, (err, files) => {
-    //   if (err) console.error(err);
-    //   this.files = files;
-    // });
   },
   components: { gridItem, explorerHeader }
 };
