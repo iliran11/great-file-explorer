@@ -1,27 +1,31 @@
 <template>
     <div class="header">
         <div class="path">
-            <span v-for="(folder,index) in path"
+            <span v-for="(folder,index) in currentPathArray"
                 :key="index"
                 @click="pathClicked(index)"
                 class="path-element">{{folder}}</span>
         </div>
         <!-- <i class="fa arrow fa-arrow-left"
-            aria-hidden="true"></i>
+                    aria-hidden="true"></i>
 
-        <i class="fa arrow fa-arrow-right"
-            aria-hidden="true"></i> -->
+                <i class="fa arrow fa-arrow-right"
+                    aria-hidden="true"></i> -->
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'header',
     props: ['path'],
+    computed: {
+        ...mapGetters(['currentPathArray'])
+    },
     methods: {
         pathClicked(index) {
-            const directoryDescentDepth = (Math.abs((this.path.length - 1) - index))
-            this.$emit('path-descented', directoryDescentDepth)
+            this.$store.dispatch('descentPath', index)
         }
     }
 }
@@ -59,8 +63,6 @@ p {
 }
 
 .arrow {
-    color: green; // background: linear-gradient(red, yellow);
-    // -webkit-background-clip: text;
-    // -webkit-text-fill-color: transparent;
+    color: green;
 }
 </style>

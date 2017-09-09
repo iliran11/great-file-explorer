@@ -16,7 +16,7 @@ export default {
   name: 'grid-item',
   methods: {
     itemClicked() {
-      this.$emit('item-selected', this.itemData)
+      this.$store.dispatch('directoryClicked', this.itemData)
     }
   },
   props: ['itemData']

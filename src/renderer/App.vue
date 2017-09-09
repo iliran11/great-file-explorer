@@ -1,7 +1,6 @@
 <template>
   <div class="app">
-    <explorer-header :path="currentPathArray"
-      @path-descented="pathDescented"></explorer-header>
+    <explorer-header @path-descented="pathDescented"></explorer-header>
     <div class="grid">
       <grid-item v-for="directory in directories"
         :key="directory"
@@ -14,25 +13,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import gridItem from './components/grid-item.vue';
 import explorerHeader from './components/header.vue'
 const fs = require('fs');
-const path = require('path')
-// const regex = new RegExp('\\\\');
 
 export default {
   name: 'Great-File-Explorer',
-  data() {
-    return {
-      currentPath: [],
-    }
-  },
   computed: {
+    ...mapGetters(['currentPathString']),
     directories() {
-      return fs.readdirSync(this.currentPath)
+      return fs.readdirSync(this.currentPathString)
         .filter((element) => {
           let isDirectory;
-          const filePath = `${this.currentPath}/${element}`
+          const filePath = `${this.currentPathString}/${element}`
           /** try/catch  block because there are so files we will have no access to them */
           try {
             isDirectory = fs.statSync(filePath).isDirectory()
@@ -40,27 +34,7 @@ export default {
           return isDirectory
         }
         )
-    },
-    currentPathArray() {
-      /** when we encounter c:\ , the split return 2 elements instead of one.
-       * https://stackoverflow.com/questions/12836062/string-split-returns-an-array-with-two-elements-instead-of-one */
-      return this.currentPath.split('\\').filter(x => x)
     }
-  },
-  methods: {
-    pathDescented(descentDepth) {
-      // this.currentPath = path.resolve(this.currentPath, '../../')
-      const descentDepthArray = new Array(descentDepth).fill('../')
-      const newPath = path.resolve.apply(null, [this.currentPath].concat(descentDepthArray))
-      this.currentPath = newPath
-    },
-    directoryClicked(directoryName) {
-      this.currentPath = path.resolve(this.currentPath, directoryName)
-    }
-  },
-  created() {
-    console.log('mounted')
-    this.currentPath = path.resolve()
   },
   components: { gridItem, explorerHeader }
 };
