@@ -1,12 +1,10 @@
 <template>
-  <div>
+  <div class="app">
+    <explorer-header :path="currentPathArray"></explorer-header>
     <div class="grid">
-      <grid-item></grid-item>
-      <grid-item></grid-item>
-      <grid-item></grid-item>
-      <grid-item></grid-item>
-      <grid-item></grid-item>
-      <grid-item></grid-item>
+      <grid-item v-for="directory in directories" :key="directory">
+        {{directory}}
+      </grid-item>
     </div>
     <button @click="goBack">Go Back</button>
     <button @click="getDetails">Print Status</button>
@@ -15,35 +13,37 @@
 
 <script>
 import gridItem from './components/grid-item.vue';
+import explorerHeader from './components/header.vue'
 const fs = require('fs');
+const path = require('path')
+// const regex = new RegExp('\\\\');
 
 export default {
   name: 'Great-File-Explorer',
   data() {
     return {
-      electron: process.versions['atom-shell'],
-      name: 'landing-page',
-      node: process.versions.node,
-      path: '/',
-      platform: require('os').platform(),
-      vue: require('vue/package.json').version,
-      currentPath: require('path').resolve('./'),
-      files: [],
-      directories: [],
-      fs: require('fs'),
-    };
+      currentPath: [],
+    }
   },
   computed: {
-    Directories() {
+    directories() {
       return fs.readdirSync(this.currentPath)
         .filter(element => fs.statSync(`${this.currentPath}/${element}`).isDirectory(),
-      );
+      )
     },
+    currentPathArray() {
+      console.log('getarray')
+      return this.currentPath.split('\\').map((element, index, array) => {
+        if (index !== (array.length - 1)) {
+          return `${element}\\`
+        }
+        return element
+      })
+    }
   },
   methods: {
     goBack() {
-      console.log('here');
-      this.currentPath = require('path').join(this.currentPath, '..');
+      this.currentPath = path.join(this.currentPath, '..');
     },
     getDetails() {
       fs.readdirSync(this.currentPath)
@@ -52,20 +52,38 @@ export default {
         });
     },
   },
-  mounted() {
-    require('fs').readdir(this.currentPath, (err, files) => {
-      if (err) console.error(err);
-      this.files = files;
-    });
+  created() {
+    console.log('mounted')
+    this.currentPath = path.resolve()
+    // fs.readdir(this.getCurrentPath, (err, files) => {
+    //   if (err) console.error(err);
+    //   this.files = files;
+    // });
   },
-  components: { gridItem }
+  components: { gridItem, explorerHeader }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
+@import './palette.scss';
+@import './sass/font-awesome-4.7.0/css/font-awesome.min.css';
+.app {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  padding: 10px 10px;
+}
+
 .grid {
-  padding: 0px 10px;
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+html {
+  font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
+  background-color: $color1;
 }
 </style>
