@@ -2,7 +2,7 @@
   <div class="app">
     <explorer-header></explorer-header>
     <div class="grid">
-      <grid-item v-for="(fsStat,directory,index) in folderContent.directories"
+      <grid-item v-for="(fsStat,directory,index) in directoryContent.directories"
         :key="index"
         :item-data="directory">
         {{directory}}
@@ -19,11 +19,11 @@ import explorerHeader from './components/header.vue'
 export default {
   name: 'Great-File-Explorer',
   computed: {
-    ...mapGetters(['folderContent']),
+    ...mapGetters(['directoryContent', 'currentPathString']),
   },
   components: { gridItem, explorerHeader },
   created() {
-    this.$store.dispatch('directoryClicked', '')
+    this.$store.dispatch('readDirectory', this.currentPathString)
   }
 };
 </script>

@@ -4,7 +4,7 @@ const fs = require('fs-extra')
 const state = {
   history: [path.resolve()],
   index: 0,
-  currentDirectory: {}
+  currentDirectoryContent: {}
 };
 const getters = {
   currentPathArray(state) {
@@ -15,8 +15,8 @@ const getters = {
   currentPathString(state) {
     return state.history[state.index]
   },
-  folderContent(state) {
-    return state.currentDirectory
+  directoryContent(state) {
+    return state.currentDirectoryContent
   }
 }
 const mutations = {
@@ -27,7 +27,7 @@ const mutations = {
     state.index = state.history.length - 1
   },
   setCurrentDirectoryContent(state, payload) {
-    state.currentDirectory = payload
+    state.currentDirectoryContent = payload
   }
 };
 
@@ -37,23 +37,17 @@ const actions = {
     const currentPathString = context.getters.currentPathString
     const descentDepth = (Math.abs((currentPathArray.length - 1) - index))
     const newPath = path.resolve.apply(null, [currentPathString].concat(new Array(descentDepth).fill('../')))
-    context.commit('pushToHistory', newPath)
-    context.commit('moveToLastIndex')
-    context.dispatch('directoryClicked')
+    context.dispatch('readDirectory', newPath)
   },
   ascendDirectory(context, payload) {
     const newPath = path.resolve(context.getters.currentPathString, payload)
-    context.commit('pushToHistory', newPath)
-    context.commit('moveToLastIndex')
-    context.dispatch('directoryClicked')
+    context.dispatch('readDirectory', newPath)
   },
-  directoryClicked(context) {
-    const currentPath = context.getters.currentPathString
-    fs.readdir(currentPath)
-      .then((files, err) => {
-        if (err) { throw err }
-        const permissions = files.map((element) => {
-          const filePath = path.resolve(currentPath, element)
+  readDirectory(context, directoryPath) {
+    fs.readdir(directoryPath)
+      .then((items) => {
+        const itemsDataPromises = items.map((element) => {
+          const filePath = path.resolve(directoryPath, element)
           return new Promise((resolve) => {
             fs.stat(filePath)
               .then((stats) => {
@@ -63,16 +57,16 @@ const actions = {
               .catch(err => resolve(err))
           })
         })
-        return Promise.all(permissions)
+        return Promise.all(itemsDataPromises)
       })
-      .then((result) => {
-        const folderContent = result.reduce((accumulator, element) => {
-          if (element.errno) {
-            accumulator.errors.push(element.path)
+      .then((itemsStats) => {
+        const folderContent = itemsStats.reduce((accumulator, itemStat) => {
+          if (itemStat.errno) {
+            accumulator.errors.push(itemStat.path)
             return accumulator
           }
-          const isDirectory = element.isDirectory()
-          accumulator[isDirectory ? 'directories' : 'files'][element.fileName] = element
+          const isDirectory = itemStat.isDirectory()
+          accumulator[isDirectory ? 'directories' : 'files'][itemStat.fileName] = itemStat
           return accumulator
         }, {
             directories: {},
@@ -80,7 +74,10 @@ const actions = {
             errors: []
           })
         context.commit('setCurrentDirectoryContent', folderContent)
+        context.commit('pushToHistory', directoryPath)
+        context.commit('moveToLastIndex')
       })
+      .catch(error => console.error(error))
   }
 };
 
