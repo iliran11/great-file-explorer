@@ -4,8 +4,15 @@
     <div class="grid">
       <grid-item v-for="(fsStat,directory,index) in directoryContent.directories"
         :key="index"
-        :item-data="directory">
+        :item-data="directory"
+        icon-class="fa-folder-o">
         {{directory}}
+      </grid-item>
+      <grid-item v-for="(fsStat,file,index) in directoryContent.files"
+        :key="index"
+        icon-class="fa-file-o"
+        :item-data="file">
+        {{file}}
       </grid-item>
     </div>
   </div>

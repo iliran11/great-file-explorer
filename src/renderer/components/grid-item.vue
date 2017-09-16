@@ -2,7 +2,8 @@
   <div class="grid-item"
     @click="itemClicked">
     <div class="icon-container">
-      <i class="fa fa-folder-o"
+      <i class="fa"
+      :class="iconClass"
         aria-hidden="true"></i>
     </div>
     <div class="item-details">
@@ -19,7 +20,14 @@ export default {
       this.$store.dispatch('ascendDirectory', this.itemData)
     }
   },
-  props: ['itemData']
+  props: {
+    itemData: {
+      type: String
+    },
+    iconClass: {
+      type: String
+    }
+  }
 };
 </script>
 
