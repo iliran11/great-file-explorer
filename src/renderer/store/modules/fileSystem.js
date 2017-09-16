@@ -46,12 +46,12 @@ const actions = {
   readDirectory(context, directoryPath) {
     fs.readdir(directoryPath)
       .then((items) => {
-        const itemsDataPromises = items.map((element) => {
-          const filePath = path.resolve(directoryPath, element)
+        const itemsDataPromises = items.map((item) => {
+          const filePath = path.resolve(directoryPath, item)
           return new Promise((resolve) => {
             fs.stat(filePath)
               .then((stats) => {
-                stats.fileName = element
+                stats.fileName = item
                 resolve(stats)
               })
               .catch(err => resolve(err))
