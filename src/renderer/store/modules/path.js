@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 
 const state = {
   history: [path.resolve()],
@@ -12,10 +13,22 @@ const getters = {
   },
   currentPathString(state) {
     return state.history[state.index]
+  },
+  directories(state, getters) {
+      const currentPath = getters.currentPathString
+      return fs.readdirSync(currentPath)
+        .filter((element) => {
+          let isDirectory;
+          const filePath = `${currentPath}/${element}`
+          /** try/catch  block because there are so files we will have no access to them */
+          try {
+            isDirectory = fs.statSync(filePath).isDirectory()
+          } catch (e) { console.log('cant read', filePath) }
+          return isDirectory
+        }
+        )
+    }
   }
-
-
-}
 const mutations = {
   pushToHistory(state, path) {
     state.history.push(path)
