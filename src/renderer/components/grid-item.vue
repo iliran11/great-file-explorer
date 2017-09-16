@@ -44,6 +44,7 @@ $title-size: 3.2vw;
 }
 
 .item-details {
+  word-break: break-word;
   text-align: center;
   flex-grow: 1;
   padding: 1vh 0px;
@@ -60,7 +61,7 @@ $title-size: 3.2vw;
 .icon-container {
   background-color: #465362;
   filter: brightness(0.8);
-  width: 20%;
+  min-width: 20%;
   height: 100%;
   display: flex;
   align-items: center;
