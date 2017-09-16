@@ -25,6 +25,7 @@ export default {
     },
     methods: {
         pathClicked(index) {
+            // this.$store.dispatch('descentPath', index)
             this.$store.dispatch('descentPath', index)
         }
     }

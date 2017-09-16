@@ -1,9 +1,10 @@
 const path = require('path')
-const fs = require('fs')
+const fs = require('fs-extra')
 
 const state = {
   history: [path.resolve()],
-  index: 0
+  index: 0,
+  currentDirectory: {}
 };
 const getters = {
   currentPathArray(state) {
@@ -14,33 +15,8 @@ const getters = {
   currentPathString(state) {
     return state.history[state.index]
   },
-  folderContent(state, getters) {
-    const currentPath = getters.currentPathString
-    return fs.readdirSync(currentPath)
-      .reduce((accumulator, element) => {
-        const filePath = `${currentPath}/${element}`
-        let isDirectory
-        let elementStat
-        try {
-          elementStat = fs.statSync(filePath)
-          isDirectory = elementStat.isDirectory()
-        } catch (e) { isDirectory = undefined }
-        switch (isDirectory) {
-          case true:
-            accumulator.directories[element] = elementStat
-            break;
-          case false:
-            accumulator.files[element] = elementStat
-            break;
-          default:
-            accumulator.unaccesible.push(element)
-        }
-        return accumulator
-      }, {
-        directories: {},
-        files: {},
-        unaccesible: []
-      })
+  folderContent(state) {
+    return state.currentDirectory
   }
 }
 const mutations = {
@@ -49,6 +25,9 @@ const mutations = {
   },
   moveToLastIndex(state) {
     state.index = state.history.length - 1
+  },
+  setCurrentDirectoryContent(state, payload) {
+    state.currentDirectory = payload
   }
 };
 
@@ -60,12 +39,48 @@ const actions = {
     const newPath = path.resolve.apply(null, [currentPathString].concat(new Array(descentDepth).fill('../')))
     context.commit('pushToHistory', newPath)
     context.commit('moveToLastIndex')
+    context.dispatch('directoryClicked')
   },
-  directoryClicked(context, directoryName) {
-    const currentPath = context.getters.currentPathString
-    const newPath = path.resolve(currentPath, directoryName)
+  ascendDirectory(context, payload) {
+    const newPath = path.resolve(context.getters.currentPathString, payload)
     context.commit('pushToHistory', newPath)
     context.commit('moveToLastIndex')
+    context.dispatch('directoryClicked')
+  },
+  directoryClicked(context) {
+    const currentPath = context.getters.currentPathString
+    fs.readdir(currentPath)
+      .then((files, err) => {
+        if (err) { throw err }
+        const permissions = files.map((element) => {
+          const filePath = path.resolve(currentPath, element)
+          return new Promise((resolve) => {
+            fs.stat(filePath)
+              .then((stats) => {
+                stats.fileName = element
+                resolve(stats)
+              })
+              .catch(err => resolve(err))
+          })
+        })
+        return Promise.all(permissions)
+      })
+      .then((result) => {
+        const folderContent = result.reduce((accumulator, element) => {
+          if (element.errno) {
+            accumulator.errors.push(element.path)
+            return accumulator
+          }
+          const isDirectory = element.isDirectory()
+          accumulator[isDirectory ? 'directories' : 'files'][element.fileName] = element
+          return accumulator
+        }, {
+            directories: {},
+            files: {},
+            errors: []
+          })
+        context.commit('setCurrentDirectoryContent', folderContent)
+      })
   }
 };
 

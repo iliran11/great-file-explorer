@@ -21,7 +21,10 @@ export default {
   computed: {
     ...mapGetters(['folderContent']),
   },
-  components: { gridItem, explorerHeader }
+  components: { gridItem, explorerHeader },
+  created() {
+    this.$store.dispatch('directoryClicked', '')
+  }
 };
 </script>
 

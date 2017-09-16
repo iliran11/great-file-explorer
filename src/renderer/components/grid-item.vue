@@ -16,7 +16,7 @@ export default {
   name: 'grid-item',
   methods: {
     itemClicked() {
-      this.$store.dispatch('directoryClicked', this.itemData)
+      this.$store.dispatch('ascendDirectory', this.itemData)
     }
   },
   props: ['itemData']
