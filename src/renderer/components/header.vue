@@ -41,7 +41,6 @@ export default {
     color: $color3;
     font-size: 5vw;
     align-items: center;
-    font-size: 72px;
 }
 
 .path-element {

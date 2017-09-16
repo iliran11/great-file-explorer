@@ -15,25 +15,11 @@
 import { mapGetters } from 'vuex'
 import gridItem from './components/grid-item.vue';
 import explorerHeader from './components/header.vue'
-const fs = require('fs');
 
 export default {
   name: 'Great-File-Explorer',
   computed: {
-    ...mapGetters(['currentPathString']),
-    directories() {
-      return fs.readdirSync(this.currentPathString)
-        .filter((element) => {
-          let isDirectory;
-          const filePath = `${this.currentPathString}/${element}`
-          /** try/catch  block because there are so files we will have no access to them */
-          try {
-            isDirectory = fs.statSync(filePath).isDirectory()
-          } catch (e) { console.log('cant read', filePath) }
-          return isDirectory
-        }
-        )
-    }
+    ...mapGetters(['directories']),
   },
   components: { gridItem, explorerHeader }
 };
