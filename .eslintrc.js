@@ -31,6 +31,7 @@ module.exports = {
     "no-console": 0,
     "semi": 0,
     "linebreak-style": 0,
-    "indent": 0
+    "indent": 0,
+    "arrow-body-style": 0
   }
 }

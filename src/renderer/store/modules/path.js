@@ -14,21 +14,35 @@ const getters = {
   currentPathString(state) {
     return state.history[state.index]
   },
-  directories(state, getters) {
-      const currentPath = getters.currentPathString
-      return fs.readdirSync(currentPath)
-        .filter((element) => {
-          let isDirectory;
-          const filePath = `${currentPath}/${element}`
-          /** try/catch  block because there are so files we will have no access to them */
-          try {
-            isDirectory = fs.statSync(filePath).isDirectory()
-          } catch (e) { console.log('cant read', filePath) }
-          return isDirectory
+  folderContent(state, getters) {
+    const currentPath = getters.currentPathString
+    return fs.readdirSync(currentPath)
+      .reduce((accumulator, element) => {
+        const filePath = `${currentPath}/${element}`
+        let isDirectory
+        let elementStat
+        try {
+          elementStat = fs.statSync(filePath)
+          isDirectory = elementStat.isDirectory()
+        } catch (e) { isDirectory = undefined }
+        switch (isDirectory) {
+          case true:
+            accumulator.directories[element] = elementStat
+            break;
+          case false:
+            accumulator.files[element] = elementStat
+            break;
+          default:
+            accumulator.unaccesible.push(element)
         }
-        )
-    }
+        return accumulator
+      }, {
+        directories: {},
+        files: {},
+        unaccesible: []
+      })
   }
+}
 const mutations = {
   pushToHistory(state, path) {
     state.history.push(path)
@@ -48,7 +62,6 @@ const actions = {
     context.commit('moveToLastIndex')
   },
   directoryClicked(context, directoryName) {
-    console.log(directoryName)
     const currentPath = context.getters.currentPathString
     const newPath = path.resolve(currentPath, directoryName)
     context.commit('pushToHistory', newPath)
