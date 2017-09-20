@@ -1,6 +1,25 @@
+# repository under construction.
+
 # great-file-explorer
 
-> An electron-vue project
+A file-explorer with big fonts.
+Intended to serve as a file-explorer that be can be manipulated easily from distance.
+
+e.g while trying to open a file, when the computer is connected to TV, and you sit in the distance with wireless mouse. :)
+
+# to-do-list
+
+## ordered by priority
+ - [ ] Add a sideline bar, for changing drives. Use case: change the drive from c:\ to d:\
+- [ ] integrate a file-icons library. so the icon of each file will resemble its meaning.
+- [ ] Improve error handling - do not display folders of which the user does not have access to them.
+- [ ] when clicking on the address bar, should be able to write down the address manually.
+
+# Demo
+![](https://i.imgur.com/gz4wIMH.gif)
+
+[logo]: 
+
 
 #### Build Setup
 
