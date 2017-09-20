@@ -65,7 +65,7 @@ $title-size: 3.2vw;
   word-break: break-word;
   text-align: center;
   flex-grow: 1;
-  padding: 1vh 0px;
+  padding: 1vh 1vw;
   margin-right: auto;
   p {
     margin: 0px;
