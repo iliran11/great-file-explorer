@@ -4,14 +4,14 @@
     <div class="grid">
       <grid-item v-for="(fsStat,directory,index) in directoryContent.directories"
         :key="index"
-        :item-data="directory"
+        :item-data="fsStat"
         icon-class="fa-folder-o">
         {{directory}}
       </grid-item>
       <grid-item v-for="(fsStat,file,index) in directoryContent.files"
         :key="index"
         icon-class="fa-file-o"
-        :item-data="file">
+        :item-data="fsStat">
         {{file}}
       </grid-item>
     </div>
@@ -22,7 +22,6 @@
 import { mapGetters } from 'vuex'
 import gridItem from './components/grid-item.vue';
 import explorerHeader from './components/header.vue'
-
 export default {
   name: 'Great-File-Explorer',
   computed: {

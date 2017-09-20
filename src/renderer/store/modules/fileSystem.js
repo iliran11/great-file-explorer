@@ -78,6 +78,10 @@ const actions = {
         context.commit('moveToLastIndex')
       })
       .catch(error => console.error(error))
+  },
+  openFile(context, filePath) {
+    const { exec } = require('child_process');
+    exec(`start ${filePath}`);
   }
 };
 

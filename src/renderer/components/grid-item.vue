@@ -3,7 +3,7 @@
     @click="itemClicked">
     <div class="icon-container">
       <i class="fa"
-      :class="iconClass"
+        :class="iconClass"
         aria-hidden="true"></i>
     </div>
     <div class="item-details">
@@ -13,16 +13,26 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import path from 'path'
 export default {
   name: 'grid-item',
   methods: {
     itemClicked() {
-      this.$store.dispatch('ascendDirectory', this.itemData)
+      if (this.itemData.isDirectory()) {
+        this.$store.dispatch('ascendDirectory', this.itemData.fileName)
+      } else {
+        const filePath = path.resolve(this.currentPathString, this.itemData.fileName)
+        this.$store.dispatch('openFile', filePath)
+      }
     }
+  },
+  computed: {
+    ...mapGetters(['currentPathString'])
   },
   props: {
     itemData: {
-      type: String
+      type: Object
     },
     iconClass: {
       type: String
