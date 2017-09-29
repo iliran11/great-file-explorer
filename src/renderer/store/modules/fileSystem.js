@@ -18,6 +18,9 @@ const getters = {
   },
   directoryContent(state) {
     return state.currentDirectoryContent
+  },
+  getPartitions(state) {
+    return state.partitions
   }
 }
 const mutations = {
@@ -46,6 +49,10 @@ const actions = {
   },
   ascendDirectory(context, payload) {
     const newPath = path.resolve(context.getters.currentPathString, payload)
+    context.dispatch('readDirectory', newPath)
+  },
+  changeDrive(context, payload) {
+    const newPath = path.resolve(payload)
     context.dispatch('readDirectory', newPath)
   },
   readDirectory(context, directoryPath) {
@@ -86,6 +93,7 @@ const actions = {
   },
   openFile(context, filePath) {
     const { exec } = require('child_process');
+    console.log(filePath)
     exec(`start ${filePath}`);
   },
   readAvailablePartitions(context) {

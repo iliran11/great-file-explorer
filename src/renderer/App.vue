@@ -2,7 +2,7 @@
   <div class="app">
     <explorer-header></explorer-header>
     <div class="content">
-      <sideline-bar/>
+      <sideline-bar class="sideline-bar"/>
       <div class="grid">
         <grid-item v-for="(fsStat,directory,index) in directoryContent.directories"
           :key="index"
@@ -57,12 +57,16 @@ body {
 .content {
   display: flex;
 }
+.sideline-bar {
+  margin-right:1.5vw;
+}
 
 .grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   align-self:flex-start;
+  margin-top:1.5vw;
 }
 
 html {
@@ -70,4 +74,11 @@ html {
   box-sizing: border-box;
   background-color: $color1;
 }
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
 </style>
