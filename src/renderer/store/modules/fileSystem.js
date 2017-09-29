@@ -4,7 +4,8 @@ const fs = require('fs-extra')
 const state = {
   history: [path.resolve()],
   index: 0,
-  currentDirectoryContent: {}
+  currentDirectoryContent: {},
+  partitions: []
 };
 const getters = {
   currentPathArray(state) {
@@ -28,6 +29,10 @@ const mutations = {
   },
   setCurrentDirectoryContent(state, payload) {
     state.currentDirectoryContent = payload
+  },
+  setPartitions(state, payload) {
+    if (Array.isArray(payload) === false) console.error('setPartitions mutation: payload is not array')
+    state.partitions = payload
   }
 };
 
@@ -82,6 +87,18 @@ const actions = {
   openFile(context, filePath) {
     const { exec } = require('child_process');
     exec(`start ${filePath}`);
+  },
+  readAvailablePartitions(context) {
+    const exec = require('child_process').exec;
+    exec('wmic logicaldisk get name', (error, stdout) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      const regex = new RegExp('[a-zA-Z]:', 'g');
+      const partitionsArray = stdout.match(regex)
+      context.commit('setPartitions', partitionsArray)
+    });
   }
 };
 
