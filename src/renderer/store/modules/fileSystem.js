@@ -91,10 +91,10 @@ const actions = {
       })
       .catch(error => console.error(error))
   },
-  openFile(context, filePath) {
+  openFile(context, payload) {
+    console.log(`cd /D "${payload.folderPath}" && "${payload.fileName}"`)
     const { exec } = require('child_process');
-    console.log(filePath)
-    exec(`start ${filePath}`);
+    exec(`cd /D "${payload.folderPath}" && "${payload.fileName}"`);
   },
   readAvailablePartitions(context) {
     const exec = require('child_process').exec;

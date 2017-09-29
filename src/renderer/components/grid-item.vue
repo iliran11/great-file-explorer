@@ -14,7 +14,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import path from 'path'
 export default {
   name: 'grid-item',
   methods: {
@@ -22,8 +21,10 @@ export default {
       if (this.itemData.isDirectory()) {
         this.$store.dispatch('ascendDirectory', this.itemData.fileName)
       } else {
-        const filePath = path.resolve(this.currentPathString, this.itemData.fileName)
-        this.$store.dispatch('openFile', filePath)
+        this.$store.dispatch('openFile', {
+          folderPath: this.currentPathString,
+          fileName: this.itemData.fileName
+        })
       }
     }
   },
